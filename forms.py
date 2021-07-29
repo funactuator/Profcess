@@ -1,54 +1,35 @@
 from django import forms
-from django.forms import widgets
 from multiselectfield import MultiSelectFormField
-from django_select2.forms import Select2MultipleWidget
 from .models import ApplicantUserProfile
 
 year=[tuple([x,x]) for x in range(1980,2020)]
 class UserProfileForm(forms.ModelForm):
+    # preferred_domain = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
     skill_info = forms.MultipleChoiceField(choices=ApplicantUserProfile.SKILLS,required=False)
     class Meta:
         model = ApplicantUserProfile
-        fields = ("first_name","last_name",
-        "resume_link","linkedin", "summary",
-        "referee_name", "referee_email","referee_designation", "referee_organisation",
-        "referee_relationship","referee_phone","designation",
-        "company_name","company_start_date","company_doc",
-        "company_end_date",
-        "company_loaction",
-        "company_description",
-        "skill_info",
-        "profile_pic",
-        "job_profile",
-        "marital_status","blood_group",
-        "certifications","dob","degree","institute_name","branch","cgpa","ins_start_date","ins_end_date","edu_description"
-        )
+        fields = ("headline","first_name","last_name","pheadline","current_position","education","country_region","location",
+        "industry","contact_information","description","school_name","school_degree","field_of_study","location_of_school",
+        "start_school","end_school","experience_title","company_name","company_city","company_state","start_company",
+        "end_company", "area_of_expertise",
+        "project_name","start_project","end_project","project_creator","associated_with",
+        "project_url","project_description",
+        "accomplishment_title","accomplishment_associated_with","issuer","issue_date","accomplishment_description","skill_info","profile_pic","gender","dob","mailid",
+                  "job_profile","experience","company","designation","current_ctc","expected_ctc","notice_period","resume_link","linkedin")
     pass
 
 class UserProfileUpdationForm(forms.ModelForm):
     skill_info = forms.MultipleChoiceField(choices=ApplicantUserProfile.SKILLS,required=False)
     class Meta:
         model = ApplicantUserProfile
-        fields = ("first_name","last_name",
-        "resume_link","linkedin", "summary",
-        "referee_name", "referee_email","referee_designation", "referee_organisation",
-        "referee_relationship","referee_phone","designation",
-        "company_name","company_start_date",
-        "company_end_date",
-        "company_loaction",
-        "company_description","location","company_doc",
-        "skill_info",
-        "profile_pic",
-        "job_profile",
-        "marital_status","blood_group",
-        "certifications","dob","degree","institute_name","branch","cgpa","ins_start_date","ins_end_date","edu_description"
-        )
-        widgets= {
-            'summary':forms.Textarea(attrs={'class':'desc','cols':76,'rows':2}),
-            'edu_description':forms.Textarea(attrs={'class':'desc', 'cols':76,'rows':2}),
-            'company_description':forms.Textarea(attrs={'class':'desc','cols':77,'rows':2}),
-            
-        }
+        fields = ("headline","first_name","last_name","pheadline","current_position","education","country_region","location",
+        "industry","contact_information","description","school_name","school_degree","field_of_study","location_of_school",
+        "start_school","end_school","experience_title","company_name","company_city","company_state","start_company",
+        "end_company", "area_of_expertise",
+        "project_name","start_project","end_project","project_creator","associated_with",
+        "project_url","project_description",
+        "accomplishment_title","accomplishment_associated_with","issuer","issue_date","accomplishment_description","skill_info","profile_pic","gender","dob","mailid",
+                  "job_profile","experience","company","designation","current_ctc","expected_ctc","notice_period","resume_link","linkedin")
     pass
 
 class PicForm(forms.ModelForm):

@@ -34,7 +34,7 @@ def view_profile(request, pk):
 @login_required
 def createprofile(request):
     if request.method == "POST":
-        form = UserProfileForm(request.POST, request.FILES)
+        form = UserProfileForm(request.POST)
         if form.is_valid():
             userprofile = form.save(commit=False)
             userprofile.user = request.user
@@ -313,7 +313,6 @@ def activate(request,uid,token):    #goes via mail
 
 @login_required
 def edit_profile(request, pk):
-    # print(pk)
     user = ProfcessUser.objects.get(id=pk)
     try:
         UserProfileUpdationForm(instance=request.user.applicantuserprofile)
@@ -321,16 +320,13 @@ def edit_profile(request, pk):
         return redirect("applicant:create_applicant_profile")
     form= UserProfileUpdationForm(instance=request.user.applicantuserprofile)
     if request.method == "POST":
-        # print("hello")
-        print(request.POST)
-        form = UserProfileUpdationForm(request.POST, request.FILES,instance= request.user.applicantuserprofile)
+        print("hello")
+        form = UserProfileUpdationForm(request.POST, instance= request.user.applicantuserprofile)
         if form.is_valid():
-            clean = form.cleaned_data
-            # print(clean)
             form.save()
             messages.success(request, 'Thanks for the details.You can apply jobs now.')
             return redirect("applicant:jobs_list")
-    # print(form)
+
     args = {'form': form}
     return render(request, 'applicant_app/userprofileform.html', args)
 
