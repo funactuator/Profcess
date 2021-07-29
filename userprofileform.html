@@ -1,0 +1,981 @@
+{% extends "dashboard.html" %}
+{% load static %}
+{% block style %}
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'css/multiple-select.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/slimselect.min.css' %}">
+<style type="text/css">
+    span > .button-style{
+        border: none;
+        background-color: transparent;
+    }
+    .ss-main .ss-multi-selected{
+        border: 0px solid white;
+    }
+    .ss-main{
+        width: 400px;
+    }
+    .ss-content{
+    	z-index: 2000;
+    }
+    .ss-search{
+    	z-index: 2000;
+    }
+</style> -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+{% endblock style %}
+
+{% block content %}
+<style>
+    label{
+        font-weight:400;
+        color: rgb(17, 4, 138);
+    }
+    select,input,textarea{
+        border-top: none;
+        border-bottom: 0.1px solid rgb(145, 143, 143);
+        border-left: 0.1px solid rgb(145, 143, 143);
+        border-right: 0.1px solid rgb(145, 143, 143);
+    }
+    h5{
+        font-weight: bold;
+    }
+    .img-circle {
+    
+    border-radius: 50%;
+    /* right: 80%; */
+    margin-left: 1rem;
+    border: 1px solid #514f51;
+}
+    .form.container {
+        /* text-align: center; */
+        margin-bottom: 50px;
+    }
+    .card-body{
+        margin-bottom: 12pt;
+    }
+    input,select {
+        width: 232px;
+        margin: 3px 2px;
+    }
+
+    #id_degree {
+        width: 232px;
+    }
+
+    .outer {
+        width: auto;
+        margin: 200px 0;
+        margin: 20px 0px;
+    }
+
+    body {
+        font-size: 16px;
+    }
+
+    .desc {
+        width: 100%;
+        margin: auto;
+    }
+    #id_skill_info{
+        width: 100%;
+        margin:auto;
+    }
+    .p-user-detail{
+        border-top: none;
+        border-bottom: 0.1px solid rgb(145, 143, 143);
+        border-left: 0.1px solid rgb(145, 143, 143);
+        border-right: 0.1px solid rgb(145, 143, 143);
+    }
+</style>
+
+<div class="form container">
+    <h1 class="primary "style="text-align:center;margin-top:20px;">Edit Profile</h1>
+    <div class="card my-100" style="width: 80%;margin:50px auto;">
+        
+        <div class="card-body my-50">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h5>{{user.first_name}} {{user.last_name}}</h5>
+                <div class="outer container">
+                    <div class="row">
+                        <div class="image col-4">
+                            {% if request.user.applicantuserprofile.profile_pic %}
+                                                <label>
+                                                    <input style="display: none;"type="file" name="profile_pic" accept="image/*" id="id_profile_pic">
+                                                    <img class="img-circle"
+                                                    src="{{ request.user.applicantuserprofile.profile_pic.url }}"
+                                                    height="170rem"
+                                                    width="170rem"
+                                                    class="img-thumbnail"
+                                                    alt="profile">
+                                                </label>
+                                                {% else %}
+                                                <label>
+                                                    <input style="display: none;"type="file"  name="profile_pic" accept="image/*"  id="id_profile_pic">
+                                                    <img class="img-circle"
+                                                    src="{% static 'dashboard/img/theme/person.png' %}"
+                                                    class="img-thumbnail"
+                                                    alt="profile">
+                                                </label>
+                                                {% endif %}
+
+
+                        </div>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col">
+                                    <label style="
+                                    margin-right: 40px;
+                                " for="">Job Profile</label>
+                                    <span>{{form.job_profile}}</span>
+        
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label for="">Contact Number</label><br>
+                                    <span class="p-user-detail">{{user.phone}}</span>
+                                </div>
+                                <div class="col">
+                                    <label for="">Email</label><br>
+                                    <span class="p-user-detail">{{user.email}}</span>
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label>Resume/Linkedin Link</label><br>
+                                    {{form.linkedin}}
+                                </div>
+                                <div class="col">
+                                    <label>Address</label><br>
+                                    {{form.location}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        
+                </div>
+                <div class="outer container " style="padding-left:15px;">
+                    <h5>Professional Summary</h5>
+                    <div class="row">
+                        <div class="col ">
+                            {{form.summary}}
+                        </div>
+                    </div>
+                </div>
+                <div class="outer container" id="skill-box"style="padding-left:15px;">
+                    <div class="row">
+                        <div class="col-11" style="margin-left: 0px;">
+                            <span style="font-weight: 700;">Skills</span>
+                        </div>
+                        <div class="col-1">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            {{form.skill_info}}
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="outer container">
+                    <div class="row">
+                        <div class="col-11">
+                            <h5>Experience</h5>
+                        </div>
+                        <div class="col-1"><i class="fa fa-pencil" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">Designation</label><br>
+                            {{form.designation}}
+                        </div>
+                        <div class="col">
+                            <label for="">Company Name</label><br>
+                            {{form.company_name}}
+                        </div>
+                        <div class="col">
+                            <label for="">Start Date</label><br>
+                            {{form.company_start_date}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">End Date</label><br>
+                            {{form.company_end_date}}
+                        </div>
+                        <div class="col">
+                            <label for="">Location</label><br>
+                            {{form.company_loaction}}
+                        </div>
+                        <div class="col">
+                            <label for="">Upload Document</label><br>
+                            {{form.company_doc}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <span>Description</span>
+                            <br>
+                            {{form.company_description}}
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="outer container">
+                    <div class="row">
+                        <div class="col-11">
+                            <h5>Educational Details</h5>
+                        </div>
+                        <div class="col-1"><i class="fa fa-pencil" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">Degree</label><br>
+                            {{form.degree}}
+                            <!-- add dropdown -->
+                        </div>
+                        <div class="col">
+                            <label for="">Institute Name</label><br>
+                            {{form.institute_name}}
+                        </div>
+                        <div class="col">
+                            <label for="">Branch</label><br>
+                            {{form.branch}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">CGPA / %</label><br>
+                            {{form.cgpa}}
+                        </div>
+                        <div class="col">
+                            <label for="">Start Date</label><br>
+                            {{form.ins_start_date}}
+                        </div>
+                        <div class="col">
+                            <label for="">End Date</label><br>
+                            {{form.ins_end_date}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <span>Description</span>
+                            <br>
+                            {{form.edu_description}}
+                        </div>
+                    </div>
+                </div>
+                <div class="outer container">
+                    <div class="row">
+                        <div class="col">
+                            <h5>Other Details</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">DOB</label><br>
+                            {{form.dob}}
+                        </div>
+                        <div class="col">
+                            <label for="">Marital Status</label><br>
+                            {{form.marital_status}}
+                        </div>
+                        <div class="col">
+                            <label for="">Blood Group</label><br>
+                            {{form.blood_group}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">Certifications</label><br>
+                            {{form.certifications}}
+                        </div>
+                    </div>
+                </div>
+                <div class="outer container">
+                    <div class="row">
+                        <div class="col-11">
+                            <h5>References</h5>
+                        </div>
+                        <div class="col-1"><i class="fa fa-pencil" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">Full Name</label><br>
+                            {{form.referee_name}}
+                        </div>
+                        <div class="col">
+                            <label for="">Contact Number</label><br>
+                            {{form.referee_phone}}
+                        </div>
+                        <div class="col">
+                            <label for="">Email</label><br>
+                            {{form.referee_email}}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="">Designation</label><br>
+                            {{form.referee_designation}}
+                        </div>
+                        <div class="col">
+                            <label for="">Present Organisation</label><br>
+                            {{form.referee_organisation}}
+                        </div>
+                        <div class="col">
+                            <label for="">Relationship</label><br>
+                            {{form.referee_relationship}}
+                        </div>
+                    </div>
+                </div>
+                <div class="outer container ">
+                    <div class="row " style="margin-top:50px;justify-content: center;">
+                        <div class="col-4">
+                            <input type="submit" class="btn btn-primary btn-sm" value="Save">
+                        </div>
+                        <div class="col-4">
+                            <input type="submit" class="btn btn-primary btn-sm" value="Download">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+    
+</div>
+{% endblock content %}
+
+
+{% comment %} <div class="container-fluid mt--6">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <div class="row justify-content-center" style="margin-top:100px">
+            <div class="col-md-11 col-12">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="row justify-content-center">
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        {% if request.user.applicantuserprofile.profile_pic.url == "" %}
+                                        <a href="{% url 'applicant:upload_pic' pk=user.pk %}">
+                                            <img src="{% static 'dashboard/img/theme/person.png' %}" height="700"
+                                                width="80%" class="img-thumbnail" alt="profile" />
+                                            <img src="{{ url }}" alt="" />
+                                        </a>
+                                        {% else %}
+
+                                        <!--<a href="{% url 'recruiter:delete_pic' pk=user.pk %}" style="color:red;font-size:25px;position:relative;top:30px; left:-18%;"><b>Remove Pic</b></a>-->
+
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="row justify-content-left">
+                                            <div class="col-md-12 col-12">
+                                                <div class="my-3">
+                                                    <span>USERNAME: {{user.username}} </span>
+                                                    <hr>
+                                                </div>
+                                                <div>
+                                                    <span class="text-primary pr-5">Profession<button id="profile"
+                                                            type="button" class="button-style fas fa-edit"
+                                                            data-toggle="modal"
+                                                            data-target="#editBrief"></button></span>
+                                                    <span id="briefDescription"></span>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <i class="fas fa-map-marker-alt"></i><span
+                                                        class="pl-2 pr-5">Location: </span>
+                                                    <span id="Location"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="row justify-content-left">
+                                            <div class="col-md-12 col-12">
+                                                <div class="my-3">
+                                                    <span>EDUCATION <button id="button-style" type="button"
+                                                            class="button-style fas fa-edit" data-toggle="modal"
+                                                            data-target="#addSchoolDetails"></button></span>
+                                                    <hr>
+                                                </div>
+                                                <div class="col" id="education"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="row justify-content-left">
+                                            <div class="col-md-12 col-12">
+                                                <div class="my-3">
+                                                    <span>CERTIFICATION <button id="button-style" type="button"
+                                                            class="button-style fas fa-edit" data-toggle="modal"
+                                                            data-target="#addAchievementDetails"></button></span>
+                                                    <hr>
+                                                </div>
+                                                <div class="col" id="achievement"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center mt-5">
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="row justify-content-left">
+                                            <div class="col-md-12 col-12">
+                                                <div>
+                                                    <span>SKILLS <button id="button-style" type="button"
+                                                            class="button-style fas fa-edit" data-toggle="modal"
+                                                            data-target="#editSkill"></button></span>
+                                                    <hr>
+                                                    <h3 id="Skill"></h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="row justify-content-left">
+                                            <div class="col-md-12 col-12">
+                                                <div>
+                                                    <span>EXPERIENCE <button id="button-style" type="button"
+                                                            class="button-style fas fa-edit" data-toggle="modal"
+                                                            data-target="#addCompanyDetails"></button></span>
+                                                    <hr>
+                                                </div>
+                                                <div id="iExp" class="col"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="row justify-content-left">
+                                            <div class="col-md-12 col-12">
+                                                <div>
+                                                    <i class="fas fa-user"></i><span class="pl-2">ABOUT <button
+                                                            id="button-style" type="button"
+                                                            class="button-style fas fa-edit" data-toggle="modal"
+                                                            data-target="#editProfile"
+                                                            onclick="saveBasic()"></button></span>
+                                                    <hr>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <span class="text-muted">
+                                                        <h6>BASIC INFORMATION</h6>
+                                                    </span>
+                                                </div>
+                                                <table>
+                                                    <tr>
+                                                        <td>First Name:</td>
+                                                        <td class="pl-2 " id="profileFirstName"></td>
+                                                        <input type="hidden" id="getFName" name="variable"
+                                                            value="{{ user.first_name }}">
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Last Name:</td>
+                                                        <td class="pl-2" id="profileLastName"></td>
+                                                        <input type="hidden" id="getLName" name="variable"
+                                                            value="{{ user.last_name }}">
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Birthday:</td>
+                                                        <td class="pl-2" id="profileDob"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Gender:</td>
+                                                        <td class="pl-2" id="profileGender"></td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-md-6 col-12">
+                                        <div class="row justify-content-left">
+                                            <div class="col-md-12 col-12">
+                                                <div class="mb-5 mt-sm-0 mt-5">
+                                                    <span>CONTACT <button id="button-style" type="button"
+                                                            class="button-style fas fa-edit" data-toggle="modal"
+                                                            data-target="#editContact"
+                                                            onclick="saveContact()"></button></span>
+                                                    <hr>
+                                                </div>
+                                                <table>
+                                                    <tr>
+                                                        <td>Phone: </td>
+                                                        <td class="pl-2" id="contactInfo"></td>
+                                                        <input type="hidden" id="getPhone" name="variable"
+                                                            value="{{ user.phone }}">
+                                                    </tr>
+                                                    <tr>
+                                                        <td>E-Mail: </td>
+                                                        <td class="pl-2" id="mailId"></td>
+                                                        <input type="hidden" id="getMail" name="variable"
+                                                            value="{{ user.email }}">
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {% for field in form %}
+                                    {% if field.name in
+                                    "job_profile,experience,company,designation,current_ctc,expected_ctc,notice_period,resume_link,linkedin"
+                                    %}
+                                    <div class="form-group row justify-content-center">
+                                        <label for="example-text-input"
+                                            class="col-md-3 col-4 col-form-label form-control-label">
+                                            {{ field.label_tag }}</label>
+                                        <div class="col-md-9 col-8">
+                                            {{ field }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <!-- <button class="btn btn-primary mt-5 float-right" id="mainSave">SAVE</button> -->
+                                <input type="submit" class="btn btn-primary mt-5 float-right" value="SAVE">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div> {% endcomment %}
+<!--DJANGO-->
+{% comment %} <div class="row justify-content-center" hidden>
+    <div class="col-md-8 col-12">
+        <form method="POST">
+            <div class="card">
+                <!-- Card header -->
+                <div class="card-header">
+                    {% csrf_token %}
+                    <div class="text-center">
+                        <button id="finalSaveButton" type="submit">Save Updated Profile</button>
+                    </div>
+                </div>
+                <!-- Card body -->
+                <div class="card-body">
+                    {% for field in form %}
+                    <div class="form-group row justify-content-center">
+                        <label for="example-text-input" class="col-md-3 col-4 col-form-label form-control-label">
+                            {{ field.label_tag }}{% if field.field.required %} * {% endif %}</label>
+                        <div class="col-md-9 col-8">
+                            {{ field }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div> {% endcomment %}
+
+
+{% comment %} <div id="editProfile" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Basic Information</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" class="form-control" value=""
+                                    name="profile[firstName]" />
+                            </div>
+                            <div class="form-group col">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" class="form-control" value=""
+                                    name="profile[lastName]" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="dob">Birthday</label>
+                                <input type="date" id="dob" class="form-control" value="" name="profile[dob]" />
+                            </div>
+                            <div class="form-group col">
+                                <label for="gender">Gender</label>
+                                <select type="text" id="gender" class="form-control" value="" name="profile[gender]">
+                                    {% for x,y in form.fields.gender.choices %}
+                                    <option value="{{x}}">{{y}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+{% comment %} <div id="editSkill" class="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Skill Information</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="skill_info">Select Skills</label>
+                                <select multiple id="skill_info" class="form-control" value="" name="Skill">
+                                    {% for x,y in form.fields.skill_info.choices %}
+                                    <option value="{{x}}">{{y}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+{% comment %} <div id="editContact" class="modal" tabindex="-1" role="dialog">
+    <form action="" method="POST"></form>
+    {%csrf_token%}
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Contact Information</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="contact_information">Phone Number</label>
+                                <input type="text" id="contact_information" class="form-control" value=""
+                                    name="contactInfo" />
+                            </div>
+                            <div class="form-group col">
+                                <label for="mailid">Email</label>
+                                <input type="text" id="mailid" class="form-control" value="" name="mailId" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+<!--Description-->
+{% comment %} <div id="editBrief" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1></h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="description">Your Profession</label>
+                            <textarea id="description" class="form-control" type="text"
+                                name="briefDescription"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="location">Your Location</label>
+                            <textarea id="location" class="form-control" type="text" name="Location"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+<!--AddCompanyDetails -->
+{% comment %} <div id="addCompanyDetails" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Add a new Experience</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="cDesignation">Add designation</label>
+                            <input id="cDesignation" type="text" class="form-control" name="iExp[designation]"
+                                required="required" />
+                        </div>
+                        <div class="form-group">
+                            <label for="cName">Company name</label>
+                            <input id="cName" type="text" class="form-control" name="iExp[cName]" />
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="cCity">City</label>
+                                <input id="cCity" class="form-control" type="text" name="iExp[city]">
+                            </div>
+                            <div class="form-group col">
+                                <label for="cState">State</label>
+                                <input id="cState" class="form-control" type="text" name="iExp[state]">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="cFrom">From</label>
+                                <input id="cFrom" class="form-control" type="date" name="iExp[from]">
+                            </div>
+                            <div class="form-group col">
+                                <label for="cTill">Till</label>
+                                <input id="cTill" class="form-control" type="date" name="iExp[till]">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+<!--AddSchoolInformation-->
+{% comment %} <div id="addSchoolDetails" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Add Institute information</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="sName">Institute name</label>
+                            <input id="sName" type="text" class="form-control" name="studentEducation[name]" />
+                        </div>
+                        <div class="form-group">
+                            <label for="sDegree">Degree</label>
+                            <input id="sDegree" type="text" class="form-control" name="studentEducation[degree]" />
+                        </div>
+                        <div class="form-group">
+                            <label for="sDegree">CGPA/Percentage%</label>
+                            <input id="scgpa" type="text" class="form-control" name="studentEducation[cgpa]" />
+                        </div>
+                        <div class="form-group">
+                            <label for="sField">Field of study(Branch)</label>
+                            <input id="sField" type="text" class="form-control" name="studentEducation[field]" />
+                        </div>
+                        <div class="form-group">
+                            <label for="sLocation">Location</label>
+                            <input id="sLocation" type="text" class="form-control" name="studentEducation[location]" />
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="sFrom">From</label>
+                                <input id="sFrom" class="form-control" type="date" name="studentEducation[from]">
+                            </div>
+                            <div class="form-group col">
+                                <label for="sTill">Till</label>
+                                <input id="sTill" class="form-control" type="date" name="studentEducation[till]">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+<!--AddProjectInformation
+<div id="addProjectDetails" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Add Project Details</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="pName">Project Name</label>
+                            <input id="pName" type="text" class="form-control" name="userProject[name]" />
+                        </div>
+                        <div class="form-group">
+                            <label for="pDescription">Project Description</label>
+                            <textarea id="pDescription" type="text" class="form-control"
+                                name="userProject[description]"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="pUrl">Project Url</label>
+                            <input id="pUrl" type="text" class="form-control" name="userProject[url]" />
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="pFrom">From (Month,YYYY)</label>
+                                <input id="pFrom" class="form-control" type="month" name="userProject[from]">
+                            </div>
+                            <div class="form-group col">
+                                <label for="pTill">Till (Month,YYYY)</label>
+                                <input id="pTill" class="form-control" type="month" name="userProject[till]">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+<!--Achievements-->
+{% comment %} <div id="addAchievementDetails" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1>Certificates</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="aTitle">Project Name</label>
+                            <input id="aTitle" type="text" class="form-control" name="achievement[title]" />
+                        </div>
+                        <div class="form-group">
+                            <label for="aDescription">Description</label>
+                            <textarea id="aDescription" type="text" class="form-control"
+                                name="achievement[description]"></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="aIssuer">Issuer</label>
+                                <input id="aIssuer" type="text" class="form-control" name="achievement[issuer]" />
+                            </div>
+                            <div class="form-group col">
+                                <label for="aIssue">Date</label>
+                                <input id="aIssue" class="form-control" type="date" name="achievement[issue]">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+{% comment %} {% endblock content %} {% endcomment %}
+
+{% comment %} {% block dashboardScripts %}
+<script src="{% static 'js/slimselect.min.js' %}" charset="utf-8"></script>
+<script type="text/javascript" src="{% static 'js/userProfile.js' %}"></script>
+<script type="text/javascript">
+    var saveBasic;
+    var saveContact;
+    $(document).ready(function () {
+        var toFName = document.getElementById("profileFirstName");
+        var fromFName = document.getElementById("getFName");
+        if (toFName.textContent == "")
+            toFName.textContent = fromFName.value;
+        var toLName = document.getElementById("profileLastName");
+        var fromLName = document.getElementById("getLName");
+        if (toLName.textContent == "")
+            toLName.textContent = fromLName.value;
+        var toPhone = document.getElementById("contactInfo");
+        var fromPhone = document.getElementById("getPhone");
+        if (toPhone.textContent == "")
+            toPhone.textContent = fromPhone.value;
+        var toMail = document.getElementById("mailId");
+        var fromMail = document.getElementById("getMail");
+        if (toMail.textContent == "")
+            toMail.textContent = fromMail.value;
+        saveBasic = function () {
+            var a = $("#getFName").val();
+            if ($("#firstName").val() == "")
+                $("#firstName").val(a);
+            var b = $("#getLName").val();
+            if ($("#lastName").val() == "")
+                $("#lastName").val(b);
+        };
+        saveContact = function () {
+            var a = $("#getPhone").val();
+            if ($("#contact_information").val() == "")
+                $("#contact_information").val(a);
+            var b = $("#getMail").val();
+            if ($("#mailid").val() == "")
+                $("#mailid").val(b);
+        };
+    });
+    select = new SlimSelect({
+        select: '.modal-content #skill_info',
+        closeOnSelect: false,
+        addToBody: true,
+        hideSelectedOption: true,
+        placeholder: 'Select Required Skills',
+    });
+    var sel = document.getElementsByTagName("select")[0];
+    var items = sel.getElementsByTagName("option");
+    var select;
+    var arr = [];
+    for (let i = 0; i < items.length; i++) {
+        if (items[i].selected) {
+            arr.push(items[i].value.trim());
+        }
+        select.set(arr);
+    }
+</script>
+{% endblock %} {% endcomment %}
